@@ -1,14 +1,15 @@
 # creator Sarang Shravagi
 import time, os
 import requests, argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 import playsound
 
 
-def fetch(district_id):
+def fetch(district_id, no_of_days_in_future):
     try:
         available_flag = False
-        url = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=%s&date=%s' % (district_id, datetime.now().strftime("%d-%m-%Y"))
+        for_date = datetime.now() + timedelta(days=int(no_of_days_in_future))
+        url = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=%s&date=%s' % (district_id, for_date.strftime("%d-%m-%Y"))
         print url
         headers = {
                 "accept": "application/json, text/plain, */*",
@@ -58,7 +59,7 @@ def get_state_id(args):
 
 def get_availability(args):
     while True:
-        fetch(args.district_id)
+        fetch(args.district_id, args.no_of_days_in_future)
         print("Sleeping....")
         time.sleep(3)
 
@@ -76,6 +77,7 @@ if __name__ == "__main__":
 
     parser_c = subparsers.add_parser('availability', help='Slot Availability Command')
     parser_c.add_argument("-d", "--district_id", required=True, help="Need distric id")
+    parser_c.add_argument("-a", "--no_of_days_in_future", required=True, help="Additional days in future")
     parser_c.set_defaults(func=get_availability)
 
     args = ap.parse_args()
