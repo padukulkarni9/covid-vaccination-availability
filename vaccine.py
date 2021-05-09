@@ -10,7 +10,7 @@ def fetch(district_id, no_of_days_in_future):
         available_flag = False
         for_date = datetime.now() + timedelta(days=int(no_of_days_in_future))
         url = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=%s&date=%s' % (district_id, for_date.strftime("%d-%m-%Y"))
-        print url
+        print (url)
         headers = {
                 "accept": "application/json, text/plain, */*",
                 "accept-encoding": "gzip, deflate, br",
@@ -32,14 +32,14 @@ def fetch(district_id, no_of_days_in_future):
             k = res.json()
             for i in k['centers']:
                 for j in i['sessions']:
-                    if j['min_age_limit'] == 18 and j['available_capacity'] >= 2:
+                    if j['min_age_limit'] == 18 and j['available_capacity'] >= 1:
                         available_flag = True
                         playsound.playsound('available.mp3', True)
                         print (i['name'], i['pincode'], i['fee_type'], j['date'], j['available_capacity'], j['slots'])
             if not available_flag:
                 print("Not Available...")
     except Exception as e:
-        print e
+        print (e)
         return
 
 
